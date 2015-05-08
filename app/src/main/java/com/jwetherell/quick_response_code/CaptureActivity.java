@@ -14,6 +14,7 @@
 
 package com.jwetherell.quick_response_code;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.EnumSet;
@@ -26,6 +27,7 @@ import com.google.zxing.ResultMetadataType;
 import com.jwetherell.quick_response_code.result.ResultHandler;
 import com.jwetherell.quick_response_code.result.ResultHandlerFactory;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -145,15 +147,19 @@ public class CaptureActivity extends DecoderActivity {
         metaTextView.setVisibility(View.GONE);
         metaTextViewLabel.setVisibility(View.GONE);
         Map<ResultMetadataType, Object> metadata = rawResult.getResultMetadata();
+        String link;
         if (metadata != null) {
             Toast.makeText(getApplicationContext(), "Odczytano kod QR", 1000).show();
-            ///intent
-         /*   StringBuilder metadataText = new StringBuilder(20);
+            //intent
+            Intent intent = new Intent(this, ProgressBarDownload.class);
+
+        StringBuilder metadataText = new StringBuilder(20);
             for (Map.Entry<ResultMetadataType, Object> entry : metadata.entrySet()) {
                 if (DISPLAYABLE_METADATA_TYPES.contains(entry.getKey())) {
                     metadataText.append(entry.getValue()).append('\n');
                 }
             }
+         /*
             if (metadataText.length() > 0) {
                 metadataText.setLength(metadataText.length() - 1);
                 metaTextView.setText(metadataText);
@@ -168,7 +174,8 @@ public class CaptureActivity extends DecoderActivity {
         // Crudely scale betweeen 22 and 32 -- bigger font for shorter text
         int scaledSize = Math.max(22, 32 - displayContents.length() / 4);
         contentsTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, scaledSize);*/
-
+        intent.putExtra("link", (Serializable) metadataText);
+        startActivity(intent);
         }
     }
 }
